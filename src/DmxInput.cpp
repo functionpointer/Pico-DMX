@@ -54,13 +54,16 @@ DmxInput::return_code DmxInput::begin(uint pin, uint start_channel, uint num_cha
 
     // Set this pin's GPIO function (connect PIO to the pad)
     pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, false);
+    pio_sm_set_consecutive_pindirs(pio, sm, 6, 1, true);
     pio_gpio_init(pio, pin);
+    pio_gpio_init(pio, 6);
     gpio_pull_up(pin);
 
     // Generate the default PIO state machine config provided by pioasm
     pio_sm_config sm_conf = DmxInput_program_get_default_config(prgm_offsets[pio_ind]);
     sm_config_set_in_pins(&sm_conf, pin); // for WAIT, IN
     sm_config_set_jmp_pin(&sm_conf, pin); // for JMP
+    sm_config_set_sideset_pins(&sm_conf, 6);
 
     // Setup the side-set pins for the PIO state machine
     // Shift to right, autopush disabled

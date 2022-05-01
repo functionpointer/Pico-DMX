@@ -16,15 +16,15 @@
 #define DmxInput_wrap 10
 
 static const uint16_t DmxInput_program_instructions[] = {
-    0xe03d, //  0: set    x, 29                      
+    0xf03d, //  0: set    x, 29           side 0     
     0x00c0, //  1: jmp    pin, 0                     
     0x0141, //  2: jmp    x--, 1                 [1] 
     0x20a0, //  3: wait   1 pin, 0                   
             //     .wrap_target
     0x2020, //  4: wait   0 pin, 0                   
     0xe427, //  5: set    x, 7                   [4] 
-    0x4001, //  6: in     pins, 1                    
-    0x0246, //  7: jmp    x--, 6                 [2] 
+    0x5801, //  6: in     pins, 1         side 1     
+    0x1246, //  7: jmp    x--, 6          side 0 [2] 
     0x20a0, //  8: wait   1 pin, 0                   
     0x4078, //  9: in     null, 24                   
     0x8020, // 10: push   block                      
@@ -41,6 +41,7 @@ static const struct pio_program DmxInput_program = {
 static inline pio_sm_config DmxInput_program_get_default_config(uint offset) {
     pio_sm_config c = pio_get_default_sm_config();
     sm_config_set_wrap(&c, offset + DmxInput_wrap_target, offset + DmxInput_wrap);
+    sm_config_set_sideset(&c, 2, true, false);
     return c;
 }
 #endif
